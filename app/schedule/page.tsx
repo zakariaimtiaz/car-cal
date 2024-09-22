@@ -11,7 +11,6 @@ const Schedule = () => {
 
   // Get the days for the current month
   const monthDays = getMonthDays(currentYear, currentMonth);
-  // Handle next and previous month view
 
   return (
     <div className="container mx-auto p-4">
