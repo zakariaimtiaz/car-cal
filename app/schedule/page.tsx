@@ -1,14 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import {
-  fetchCarSchedule,
-  daysOfWeek,
-  getMonthDays,
-  findScheduleForDate,
-  getTimeAlias,
-  CarSchedule,
-} from "./helpers";
+import { daysOfWeek, getMonthDays } from "./helpers";
 import CalNavBar from "./components/CalNavBar";
 
 const Schedule = () => {

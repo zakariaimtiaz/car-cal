@@ -1,4 +1,4 @@
-import { format, isSameDay } from "date-fns";
+// import { format, isSameDay } from "date-fns";
 
 export interface CarSchedule {
   carName: string;
@@ -11,45 +11,6 @@ export interface CarSchedule {
   endTime: string;
   color: string;
 }
-
-// Mock API function to fetch car schedule data
-export const fetchCarSchedule = async (): Promise<CarSchedule[]> => {
-  return [
-    {
-      carName: "Car A",
-      driverName: "John",
-      requester: "Helen",
-      startDate: new Date(2024, 8, 10),
-      endDate: new Date(2024, 8, 11),
-      status: "Booked",
-      startTime: "09:00",
-      endTime: "17:00",
-      color: "#1d4ed8",
-    },
-    {
-      carName: "Car B",
-      driverName: "Jane",
-      requester: "Andrew",
-      startDate: new Date(2024, 8, 15),
-      endDate: new Date(2024, 8, 15),
-      status: "Booked",
-      startTime: "08:00",
-      endTime: "12:00",
-      color: "#f59e0b",
-    },
-    {
-      carName: "Car C",
-      driverName: "Roberts",
-      requester: "Helen",
-      startDate: new Date(2024, 8, 15),
-      endDate: new Date(2024, 8, 15),
-      status: "Booked",
-      startTime: "10:00",
-      endTime: "12:00",
-      color: "#ef4444",
-    },
-  ];
-};
 
 // Helper function to generate the days of the current month
 export const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -125,57 +86,95 @@ export const getMonthDays = (year: number, month: number) => {
   return daysInMonth;
 };
 
-// Helper function to check if a date is within a booking's range
-export const findScheduleForDate = (
-  carSchedule: CarSchedule[],
-  date: number | Date
-) => {
-  return carSchedule.filter((schedule) => {
-    return date >= schedule.startDate && date <= schedule.endDate;
-  });
-};
+// // Mock API function to fetch car schedule data
+// export const fetchCarSchedule = async (): Promise<CarSchedule[]> => {
+//   return [
+//     {
+//       carName: "Car A",
+//       driverName: "John",
+//       requester: "Helen",
+//       startDate: new Date(2024, 8, 10),
+//       endDate: new Date(2024, 8, 11),
+//       status: "Booked",
+//       startTime: "09:00",
+//       endTime: "17:00",
+//       color: "#1d4ed8",
+//     },
+//     {
+//       carName: "Car B",
+//       driverName: "Jane",
+//       requester: "Andrew",
+//       startDate: new Date(2024, 8, 15),
+//       endDate: new Date(2024, 8, 15),
+//       status: "Booked",
+//       startTime: "08:00",
+//       endTime: "12:00",
+//       color: "#f59e0b",
+//     },
+//     {
+//       carName: "Car C",
+//       driverName: "Roberts",
+//       requester: "Helen",
+//       startDate: new Date(2024, 8, 15),
+//       endDate: new Date(2024, 8, 15),
+//       status: "Booked",
+//       startTime: "10:00",
+//       endTime: "12:00",
+//       color: "#ef4444",
+//     },
+//   ];
+// };
+// // Helper function to check if a date is within a booking's range
+// export const findScheduleForDate = (
+//   carSchedule: CarSchedule[],
+//   date: number | Date
+// ) => {
+//   return carSchedule.filter((schedule) => {
+//     return date >= schedule.startDate && date <= schedule.endDate;
+//   });
+// };
 
-export const getMinTimeOfDay = () => "00:01"; // Define the minimum time of the day
-export const getMaxTimeOfDay = () => "23:59"; // Define the maximum time of the day
+// export const getMinTimeOfDay = () => "00:01"; // Define the minimum time of the day
+// export const getMaxTimeOfDay = () => "23:59"; // Define the maximum time of the day
 
-export const getDisplayTime = (schedule: CarSchedule, date: Date) => {
-  const isMultiDay =
-    schedule.startDate.getTime() !== schedule.endDate.getTime();
-  let displayTime;
+// export const getDisplayTime = (schedule: CarSchedule, date: Date) => {
+//   const isMultiDay =
+//     schedule.startDate.getTime() !== schedule.endDate.getTime();
+//   let displayTime;
 
-  if (isMultiDay) {
-    if (isSameDay(date, schedule.startDate)) {
-      displayTime = `${schedule.startTime} - ${getMaxTimeOfDay()}`;
-    } else if (isSameDay(date, schedule.endDate)) {
-      displayTime = `${getMinTimeOfDay()} - ${schedule.endTime}`;
-    } else {
-      displayTime = `${getMinTimeOfDay()} - ${getMaxTimeOfDay()}`;
-    }
-  } else {
-    displayTime = `${schedule.startTime} - ${schedule.endTime}`;
-  }
+//   if (isMultiDay) {
+//     if (isSameDay(date, schedule.startDate)) {
+//       displayTime = `${schedule.startTime} - ${getMaxTimeOfDay()}`;
+//     } else if (isSameDay(date, schedule.endDate)) {
+//       displayTime = `${getMinTimeOfDay()} - ${schedule.endTime}`;
+//     } else {
+//       displayTime = `${getMinTimeOfDay()} - ${getMaxTimeOfDay()}`;
+//     }
+//   } else {
+//     displayTime = `${schedule.startTime} - ${schedule.endTime}`;
+//   }
 
-  return displayTime;
-};
+//   return displayTime;
+// };
 
-export const getTimeAlias = (schedule: CarSchedule, date: Date) => {
-  const startTime = schedule.startTime;
-  const endTime = schedule.endTime;
-  const isMultiDay =
-    schedule.startDate.getTime() !== schedule.endDate.getTime();
+// export const getTimeAlias = (schedule: CarSchedule, date: Date) => {
+//   const startTime = schedule.startTime;
+//   const endTime = schedule.endTime;
+//   const isMultiDay =
+//     schedule.startDate.getTime() !== schedule.endDate.getTime();
 
-  if (
-    isSameDay(date, schedule.startDate) &&
-    isSameDay(date, schedule.endDate)
-  ) {
-    return `${startTime} - ${endTime}`; // Same day booking
-  } else if (isSameDay(date, schedule.startDate)) {
-    return `from ${startTime}`; // Starting day
-  } else if (isSameDay(date, schedule.endDate)) {
-    return `till ${endTime}`; // Ending day
-  } else if (isMultiDay) {
-    return `whole day`; // Middle days
-  } else {
-    return ""; // No booking
-  }
-};
+//   if (
+//     isSameDay(date, schedule.startDate) &&
+//     isSameDay(date, schedule.endDate)
+//   ) {
+//     return `${startTime} - ${endTime}`; // Same day booking
+//   } else if (isSameDay(date, schedule.startDate)) {
+//     return `from ${startTime}`; // Starting day
+//   } else if (isSameDay(date, schedule.endDate)) {
+//     return `till ${endTime}`; // Ending day
+//   } else if (isMultiDay) {
+//     return `whole day`; // Middle days
+//   } else {
+//     return ""; // No booking
+//   }
+// };

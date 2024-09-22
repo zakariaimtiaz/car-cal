@@ -10,3 +10,8 @@ const Home = async () => {
 };
 
 export default Home;
+
+// git status          # Check the current status
+// git add .          # Stage all changes
+// git commit -m "Your commit message"  # Commit changes
+// git push -u origin main  # Push to GitHub
