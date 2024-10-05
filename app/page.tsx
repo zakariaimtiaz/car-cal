@@ -1,11 +1,11 @@
 import React from "react";
-import Schedule from "./schedule/page";
+import Login from "./login/page";
 
-const Home = async () => {
+const Home = () => {
   return (
-    <div>
-      <Schedule />
-    </div>
+    <>
+      <Login />
+    </>
   );
 };
 

@@ -32,7 +32,7 @@ const CalNavBar: React.FC<CalNavBarProps> = ({
   };
 
   return (
-    <div className="flex justify-center items-center mb-4">
+    <div className="flex justify-center items-center mb-4 pt-1">
       <button
         onClick={handlePrevMonth}
         className="bg-blue-500 text-white px-4 py-2 rounded mx-2"
