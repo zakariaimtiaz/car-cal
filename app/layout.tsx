@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { initializeDb } from "./lib/dbInit";
 
 export const metadata: Metadata = {
   title: "Car Calendar",
@@ -12,8 +11,6 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // Call the async database initialization
-  // await initializeDb();
   return (
     <html lang="en">
       <body>{children}</body>

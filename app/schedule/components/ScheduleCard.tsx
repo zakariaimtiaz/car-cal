@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCar,
@@ -10,6 +10,11 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 import moment from "moment";
+
+interface Driver {
+  driver_id: number;
+  driver_name: string;
+}
 
 interface ScheduleCardProps {
   schedule: {
@@ -38,7 +43,7 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({
   onUpdateSchedule,
 }) => {
   const [modalOpen, setModalOpen] = useState(false);
-  const [drivers, setDrivers] = useState<any[]>([]); // Update type as per your driver structure
+  const [drivers, setDrivers] = useState<Driver[]>([]);
   const [selectedDriverId, setSelectedDriverId] = useState<string | null>(null); // State for selected driver
 
   const handleCardClick = () => {
@@ -68,7 +73,7 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({
 
       if (response.ok) {
         const data = await response.json();
-        setDrivers(data.rows);
+        setDrivers(data.rows as Driver[]);
       } else {
         throw new Error("Failed to fetch cars");
       }

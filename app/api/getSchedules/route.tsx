@@ -1,11 +1,12 @@
-import { NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
 import { sql } from "@vercel/postgres";
 
-export async function GET(request: { url: string | URL }) {
+export async function GET(request: NextRequest) {
   try {
-    const { searchParams } = new URL(request.url);
-    const year = searchParams.get("year");
-    const month = searchParams.get("month");
+    const url = new URL(request.url);
+    const year = url.searchParams.get("year");
+    const month = url.searchParams.get("month");
+
     const schedules = await sql`
            SELECT 
             sm.id, ci.car_id, ci.car_name, 

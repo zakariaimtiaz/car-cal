@@ -1,4 +1,4 @@
-import { format, isSameDay } from "date-fns";
+import { isSameDay } from "date-fns";
 import moment from "moment";
 
 export interface CarSchedule {

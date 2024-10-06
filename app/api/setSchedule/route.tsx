@@ -1,9 +1,9 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { sql } from "@vercel/postgres";
 
-export async function POST(request: { json: () => any }) {
+export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
+    const body = await request.json(); // Parse the request body
     const { car_id, start_time, end_time, requestor_id, requestor_info } = body;
 
     if (
