@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "http://devs.apps.friendship.ngo:8080/:path*"
+    }
+  ]
+}
