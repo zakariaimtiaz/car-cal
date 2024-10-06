@@ -4,19 +4,13 @@ import { sql } from "@vercel/postgres";
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json(); // Parse the JSON body from the request
-    const { id, driverId, status } = body;
-
-    if (!id || !status) {
-      return NextResponse.json(
-        { error: "Missing required fields" },
-        { status: 400 }
-      );
-    }
+    const { id, startTime, endTime, status, carId, driverId } = body;
 
     // Insert into schedule_master table
     const result = await sql`
-      UPDATE schedule_master SET driver_id = ${driverId}, status = ${status}
-      WHERE id = ${id}
+      UPDATE schedule_master SET start_time = ${startTime}, end_time = ${endTime}, 
+      status = ${status}, car_id = ${carId}, driver_id = ${driverId}
+      WHERE id = ${id} AND status = 'Requested' 
       RETURNING *;
     `;
 

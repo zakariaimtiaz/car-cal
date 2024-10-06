@@ -4,9 +4,7 @@ import { sql } from "@vercel/postgres";
 export async function GET(request: NextRequest) {
   try {
     const url = new URL(request.url);
-    const year = url.searchParams.get("year");
-    const month = url.searchParams.get("month");
-    const userId = url.searchParams.get("userId");
+    const id = url.searchParams.get("id");
 
     const schedules = await sql`
            SELECT 
@@ -20,17 +18,13 @@ export async function GET(request: NextRequest) {
         FROM schedule_master sm
         LEFT JOIN car_info ci ON sm.car_id = ci.car_id
         LEFT JOIN driver_info di ON di.driver_id = sm.driver_id
-        WHERE 
-            EXTRACT(YEAR FROM sm.start_time) = ${year}
-            AND EXTRACT(MONTH FROM sm.start_time) = ${month}
-            AND CASE WHEN sm.requestor_id <> ${userId} THEN sm.status <> 'Rejected' ELSE true END
-            ORDER BY sm.start_time, sm.end_time ASC
+        WHERE sm.id = ${id}
     `;
     return NextResponse.json(schedules.rows);
   } catch (error) {
-    console.error("Error fetching schedules:", error);
+    console.error("Error fetching schedule:", error);
     return NextResponse.json(
-      { error: "Failed to fetch schedules" },
+      { error: "Failed to fetch schedule" },
       { status: 500 }
     );
   }

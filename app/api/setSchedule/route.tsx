@@ -4,15 +4,9 @@ import { sql } from "@vercel/postgres";
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json(); // Parse the request body
-    const { car_id, start_time, end_time, requestor_id, requestor_info } = body;
+    const { start_time, end_time, requestor_id, requestor_info } = body;
 
-    if (
-      !car_id ||
-      !start_time ||
-      !end_time ||
-      !requestor_id ||
-      !requestor_info
-    ) {
+    if (!start_time || !end_time || !requestor_id || !requestor_info) {
       return NextResponse.json(
         { error: "Missing required fields" },
         { status: 400 }
@@ -21,8 +15,8 @@ export async function POST(request: NextRequest) {
 
     // Insert into schedule_master table
     const result = await sql`
-      INSERT INTO schedule_master (car_id, start_time, end_time, requestor_id, requestor_info, status)
-      VALUES (${car_id}, ${start_time}, ${end_time}, ${requestor_id}, ${requestor_info}, 'Requested')
+      INSERT INTO schedule_master (start_time, end_time, requestor_id, requestor_info, status)
+      VALUES (${start_time}, ${end_time}, ${requestor_id}, ${requestor_info}, 'Requested')
       RETURNING *;
     `;
 

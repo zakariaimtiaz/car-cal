@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCar, faSignOutAlt } from "@fortawesome/free-solid-svg-icons"; // Import the car icon and sign out icon
 
 // Define the props type for Navbar
 interface NavbarProps {
@@ -15,8 +17,16 @@ const Navbar: React.FC<NavbarProps> = ({ username, onLogout }) => {
 
   return (
     <nav className="bg-blue-500 text-white py-4 px-8 flex justify-between items-center">
-      <h1 className="text-xl font-bold">Car Schedule</h1>
+      {/* Logo Section */}
+      <div className="flex items-center">
+        <FontAwesomeIcon
+          icon={faCar} // Use the car icon or any other desired icon
+          className="text-white text-3xl mr-2" // Adjust size and color as needed
+        />
+        <h1 className="text-xl font-bold">Car Schedule</h1>
+      </div>
 
+      {/* User Section */}
       <div className="relative">
         <button
           onClick={toggleDropdown}
@@ -46,8 +56,12 @@ const Navbar: React.FC<NavbarProps> = ({ username, onLogout }) => {
             <ul className="py-2">
               <li
                 onClick={onLogout}
-                className="px-4 py-2 hover:bg-gray-200 cursor-pointer"
+                className="px-4 py-2 hover:bg-gray-200 cursor-pointer flex items-center" // Flex for icon alignment
               >
+                <FontAwesomeIcon
+                  icon={faSignOutAlt} // Logout icon
+                  className="mr-2" // Margin for spacing
+                />
                 Logout
               </li>
             </ul>

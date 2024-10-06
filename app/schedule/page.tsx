@@ -1,7 +1,8 @@
 "use client";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlusCircle } from "@fortawesome/free-solid-svg-icons";
+import { faPlusSquare } from "@fortawesome/free-regular-svg-icons";
+
 import { useRouter } from "next/navigation";
 import React, { useState, useEffect } from "react";
 import { daysOfWeek, getMonthDays } from "./helpers";
@@ -9,16 +10,18 @@ import CalNavBar from "./components/CalNavBar";
 import BookingPopup from "./components/BookingPopup";
 import ScheduleCard from "./components/ScheduleCard";
 import moment from "moment";
-import Navbar from "./components/Navbar"; // Import Navbar component
+import Navbar from "./components/Navbar";
 
 // Define the schedule type
 interface Schedule {
   id: string;
+  car_id: string;
   car_name: string;
   schedule_date: string;
   schedule_date_nxt: string;
   start_time: string;
   end_time: string;
+  driver_id: string;
   driver_name: string;
   driver_phone: string;
   requestor_id: string;
@@ -34,7 +37,7 @@ const Schedule = () => {
   const [currentMonth, setCurrentMonth] = useState(today.getMonth());
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [schedules, setSchedules] = useState<Schedule[]>([]);
-  const [isSaving, setIsSaving] = useState(false); // Spinner for booking save process
+  const [isSaving, setIsSaving] = useState(false);
   const monthDays = getMonthDays(currentYear, currentMonth);
   const [userInfo, setUserInfo] = useState({
     userId: "",
@@ -45,11 +48,34 @@ const Schedule = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
 
+  useEffect(() => {
+    const sessionx = localStorage.getItem("USER_INFO");
+    if (!sessionx) {
+      // If no session, redirect to login page
+      router.push("/login");
+    } else {
+      setIsLoggedIn(true);
+      const user = JSON.parse(sessionx); // Parse the JSON string
+      if (user.role_code === "ROLE_MIS_HR_ADMIN") {
+        setIsAdmin(true);
+      }
+      const newUserInfo = {
+        userId: user.employee_id,
+        userName: user.employee_name,
+        userEmail: user.employee_email,
+        roleCode: user.role_code,
+      };
+      setUserInfo(newUserInfo);
+
+      fetchSchedule(currentYear, currentMonth, newUserInfo.userId);
+    }
+  }, [router, currentYear, currentMonth]);
+
   // Function to fetch schedules for the selected month and year
-  const fetchSchedule = async (year: number, month: number) => {
+  const fetchSchedule = async (year: number, month: number, userId: string) => {
     try {
       const response = await fetch(
-        `/api/getSchedules?year=${year}&month=${month + 1}`
+        `/api/getSchedules?year=${year}&month=${month + 1}&userId=${userId}`
       );
       if (response.ok) {
         const data = await response.json();
@@ -59,36 +85,10 @@ const Schedule = () => {
       }
     } catch (error) {
       console.error("Error:", error);
-    } finally {
     }
   };
 
-  useEffect(() => {
-    const userInfo = localStorage.getItem("USER_INFO");
-    if (!userInfo) {
-      // If no user info, redirect to login page
-      router.push("/login");
-    } else {
-      setIsLoggedIn(true);
-      const user = JSON.parse(userInfo); // Parse the JSON string
-      if (user.role_code === "ROLE_MIS_HR_ADMIN") {
-        setIsAdmin(true);
-      }
-      setUserInfo({
-        userId: user.employee_id,
-        userName: user.employee_name,
-        userEmail: user.employee_email,
-        roleCode: user.role_code,
-      });
-      fetchSchedule(currentYear, currentMonth);
-    }
-  }, [router, currentYear, currentMonth]);
-
-  const handleBook = async (schedule: {
-    carId: number;
-    startDate: Date;
-    endDate: Date;
-  }) => {
+  const handleBook = async (schedule: { startDate: Date; endDate: Date }) => {
     setIsSaving(true); // Show spinner during booking save process
     try {
       if (!userInfo) {
@@ -97,7 +97,6 @@ const Schedule = () => {
       }
 
       const data = {
-        car_id: schedule.carId,
         start_time: moment(schedule.startDate).format("YYYY-MM-DD HH:mm:ss"),
         end_time: moment(schedule.endDate).format("YYYY-MM-DD HH:mm:ss"),
         requestor_id: userInfo.userId,
@@ -121,7 +120,7 @@ const Schedule = () => {
       console.error("Error:", error);
     } finally {
       setIsSaving(false); // Hide spinner after saving
-      fetchSchedule(currentYear, currentMonth);
+      fetchSchedule(currentYear, currentMonth, userInfo.userId);
     }
   };
 
@@ -162,35 +161,8 @@ const Schedule = () => {
     router.push("/login"); // Redirect to login page
   };
 
-  const updateSchedule = async (
-    scheduleId: string,
-    newStatus: string,
-    driverId?: string
-  ) => {
-    try {
-      const data = {
-        id: scheduleId,
-        status: newStatus,
-        driverId: driverId,
-      };
-
-      const response = await fetch("/api/updateSchedule", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
-
-      if (response.ok) {
-      } else {
-        console.error("Error update booking:", response.statusText);
-      }
-    } catch (error) {
-      console.error("Error:", error);
-    } finally {
-      fetchSchedule(currentYear, currentMonth);
-    }
+  const postUpdateSchedule = () => {
+    fetchSchedule(currentYear, currentMonth, userInfo.userId);
   };
 
   return (
@@ -258,9 +230,9 @@ const Schedule = () => {
 
                                 <span className="absolute top-1 right-1 text-sm">
                                   <FontAwesomeIcon
-                                    icon={faPlusCircle}
+                                    icon={faPlusSquare}
                                     onClick={() => handleDateClick(fullDate)}
-                                    className="mr-2 text-gray-300 cursor-pointer"
+                                    className="mr-2 text-gray-400 cursor-pointer"
                                     title="Click to book car"
                                   />
                                 </span>
@@ -272,9 +244,11 @@ const Schedule = () => {
                                       <ScheduleCard
                                         key={`${schedule.car_name}-${schedule.start_time}-${index}`} // Unique key
                                         schedule={schedule}
-                                        fullDate={fullDate}
                                         isAdmin={isAdmin}
-                                        onUpdateSchedule={updateSchedule}
+                                        userId={userInfo.userId}
+                                        onUpdateSchedule={() =>
+                                          postUpdateSchedule()
+                                        }
                                       />
                                     ))}
                                   </div>

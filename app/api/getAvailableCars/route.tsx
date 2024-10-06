@@ -6,14 +6,12 @@ export async function GET(request: Request) {
   const startDate = url.searchParams.get("startDate");
   const endDate = url.searchParams.get("endDate");
 
-  console.log("startDate: " + startDate + ", endDate: " + endDate);
-
   try {
     // SQL query to get available cars, filtering based on the date range
     const cars = await sql`
         SELECT ci.car_id, ci.car_name
         FROM car_info ci
-        LEFT JOIN schedule_master sm ON sm.car_id = ci.car_id
+        LEFT JOIN schedule_master sm ON sm.car_id = ci.car_id AND sm.status <> 'Rejected'
           AND (
             (sm.start_time < ${endDate} AND sm.end_time > ${startDate})
           )

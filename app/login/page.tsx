@@ -20,7 +20,6 @@ const Login = () => {
         if (res.code === 200) {
           const data = res.body;
           if (data) {
-            console.log(JSON.stringify(data));
             localStorage.setItem("USER_INFO", JSON.stringify(data));
             router.push("/schedule");
           } else {
